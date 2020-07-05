@@ -4,7 +4,7 @@
 
 { config, pkgs, ... }:
 
-with builtins; let 
+with builtins; let
 
   local = import <local> {};
 
