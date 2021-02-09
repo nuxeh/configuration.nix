@@ -6,9 +6,10 @@
 
 with builtins; let
 
-  local = import <local> {};
+  local = import <local> { config.allowUnfree = true; };
 
 in {
+
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
@@ -18,7 +19,7 @@ in {
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+  #boot.binfmt.emulatedSystems = [ "aarch64-linux" "armv7l-linux" ];
 
   # networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -29,6 +30,25 @@ in {
   networking.useDHCP = false;
   networking.interfaces.enp37s0.useDHCP = true;
   networking.interfaces.wlp38s0.useDHCP = true;
+
+  # static ip for domoticz
+  #networking = {
+  #  usePredictableInterfaceNames = false;
+  #  interfaces.eth0.ipv4.addresses = [{
+  #    address = "192.168.1.160";
+  #    prefixLength = 24;
+  #  }];
+  #  defaultGateway = "192.168.1.254";
+  #  nameservers = [ "192.168.1.254" "1.1.1.1" "8.8.8.8" ];
+  #};
+
+  #virtualisation.docker.enable = true;
+  virtualisation = {
+    podman = {
+      enable = true;
+      dockerCompat = true; # Create a `docker` alias for podman, to use it as a drop-in replacement
+    };
+  };
 
   # Container instances
 #  containers.pihole-test = {
@@ -65,6 +85,7 @@ in {
   # Set your time zone.
   time.timeZone = "Europe/London";
 
+  # allow non-free
   nixpkgs.config.allowUnfree = true;
 
   # List packages installed in system profile. To search, run:
@@ -76,6 +97,7 @@ in {
     firefox
     gnome3.gnome-tweaks cups
     platformio arduino screen
+    #pkgsCross.avr.buildPackages.gcc
     tor-browser-bundle-bin gnupg exodus
     zola
     python3
@@ -87,8 +109,44 @@ in {
     feh
     kicad-small
     fstl #local.candle
+    solvespace
     nix-prefetch-github
     audacity
+    vlc
+    youtube-dl
+    transmission
+    google-chrome
+    jq
+    clang
+    alacritty
+    libreoffice
+    eagle
+    unrar
+    cachix
+    hunspell
+    pwgen
+    pandoc
+    wkhtmltopdf
+    steam
+    nixos-shell
+    #slic3r
+    #freecad
+    asciinema
+    #docker
+    #local.ringcentral-meetings
+    openvpn
+    wine winetricks
+    signal-desktop
+    #flutter-beta
+    #debootstrap
+    binutils.bintools
+    timewarrior
+    texlive.combined.scheme-small
+    #callPackage (import flutterPackages.mkFlutter) { beta };
+    #cudatoolkit
+    powerline-fonts
+    gnomeExtensions.system-monitor
+    hdparm
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -109,11 +167,46 @@ in {
   # Enable dnsmasq
   services.dnsmasq.enable = false;
 
+  # domoticz
+  services.domoticz.enable = false;
+
+  # softiron vpn
+  #services.pritunl.enable = true;
+  services.openvpn.servers = {
+    softironVPN  = {
+      config = '' config /home/ed/work/softiron/softiron_r/softiron_r_abs.ovpn '';
+      updateResolvConf = true;
+      autoStart = false;
+    };
+  };
+
+  programs.ssh.extraConfig = ''
+    Host git.softiron.com
+      IdentityFile /home/ed/work/softiron/softiron_r/softiron
+  '';
+
+  services.mosquitto = {
+    enable = false;
+    host = "0.0.0.0";
+    port = 1883;
+    users = {
+      device = {
+        hashedPassword = "$6$U1xPVIdiyB8xgtvC$/IsgFqB0pYcrQJRXwv+L007QYm961ulm+2p7rUqf1C4vEnqEkMll4dcL22S3gSnHdawoqnKlKuYM9zA7T4UFIw==";
+        acl = [
+          "topic readwrite office/#"
+          "topic readwrite house/#"
+          "topic readwrite den/#"
+          "topic readwrite domoticz/#"
+        ];
+      };
+    };
+  };
+
   # Open ports in the firewall.
-  networking.firewall.allowedTCPPorts = [ 8266 ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
+  networking.firewall.allowedTCPPorts = [ 8266 28266 8080 8081 1883 5901 ];
+  #networking.firewall.allowedUDPPorts = [ 1883 ];
   # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
+  #networking.firewall.enable = false;
 
   # Enable CUPS to print documents.
   # services.printing.enable = true;
@@ -135,6 +228,11 @@ in {
     pkgs.gutenprint
     pkgs.gutenprintBin
   ];
+
+  # automatically spin down /dev/sda
+  powerManagement.powerUpCommands = ''
+    ${pkgs.hdparm}/sbin/hdparm -B 1 /dev/sda
+  '';
 
   # Enable touchpad support.
   # services.xserver.libinput.enable = true;
