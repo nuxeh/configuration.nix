@@ -8,16 +8,34 @@ with builtins; let
 
   local = import <local> { config.allowUnfree = true; };
 
+  #ringcentralPin = import (pkgs.fetchFromGitHub {
+  #    owner = "nuxeh";
+  #    repo = "nixpkgs";
+  #    rev = "71e36f320f1274712c530fe188e98ea3c9d4d54b";
+  #    sha256 = "1c7s7nl1asn5xxl18iv5hdfq5jap77d3sp93c0833wgsildy72sv";
+  #  }) { config.allowUnfree = true; };
+
+  home-manager-git = builtins.fetchGit {
+    url = "https://github.com/rycee/home-manager.git";
+    rev = "dd94a849df69fe62fe2cb23a74c2b9330f1189ed";
+    ref = "master";
+  };
+
+  home-manager = builtins.fetchTarball "https://github.com/rycee/home-manager/archive/master.tar.gz";
+
 in {
 
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      (import "${home-manager}/nixos")
     ];
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+
+  home-manager.users.ed = import /home/ed/.config/nixpkgs/home.nix;
 
   #boot.binfmt.emulatedSystems = [ "aarch64-linux" "armv7l-linux" ];
 
