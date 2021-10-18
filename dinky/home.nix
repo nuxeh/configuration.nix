@@ -34,6 +34,7 @@
     '';
   };
 
+  # git
   programs.git = {
     enable = true;
 
@@ -47,6 +48,16 @@
       ct = "commit";
       st = "status";
     };
+
+    extraConfig = {
+      core = {
+        editor = "vim";
+      };
+    };
+  };
+
+  programs.gh = {
+    enable = true;
   };
 
   # This value determines the Home Manager release that your
