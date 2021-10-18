@@ -60,6 +60,19 @@
     enable = true;
   };
 
+  # fish
+  programs.fish = {
+    enable = true;
+
+    shellAliases = {
+      g = "git";
+      gs = "git status";
+      gc = "git diff --cached";
+      gd = "git diff";
+      vi = "vim";
+    };
+  };
+
   # This value determines the Home Manager release that your
   # configuration is compatible with. This helps avoid breakage
   # when a new Home Manager release introduces backwards
