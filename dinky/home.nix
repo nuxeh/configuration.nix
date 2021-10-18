@@ -71,6 +71,10 @@
       gd = "git diff";
       vi = "vim";
     };
+
+    functions = {
+      mkcd = "mkdir $argv; and cd $argv";
+    };
   };
 
   # This value determines the Home Manager release that your
