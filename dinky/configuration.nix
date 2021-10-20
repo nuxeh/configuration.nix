@@ -20,7 +20,7 @@
     options = "--delete-older-than 30d";
   };
 
-  # Use flakes
+  # Enable nix flakes
   nix = {
     package = pkgs.nixUnstable;
     extraOptions = ''
