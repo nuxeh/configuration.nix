@@ -11,6 +11,13 @@
       ./system-packages.nix
     ];
 
+  nixpkgs.overlays = [
+    #(import ./url-bot-rs/overlay.nix)
+  ];
+
+  # Non free
+  nixpkgs.config.allowUnfree = true;
+
   # Storage optimisation
   nix.autoOptimiseStore = true;
 
@@ -118,6 +125,9 @@
         shell = pkgs.fish;
         hashedPassword = "$6$/G.qBySWc$a6wVNc6QOoQNAO6kw.f01domc26TsZJ9adM5gSmUdm1l4t/S.j0A.lAfKRVmcRiEvN/NrH6ZRSIaXFMwtLqeO1";
       };
+      root = {
+        extraGroups = [ "dialout" ];
+      };
     };
   };
 
@@ -132,12 +142,13 @@
   programs.fish.enable = true;
 
   # List services that you want to enable:
+  services.domoticz.enable = true;
 
   # Enable the OpenSSH daemon.
   # services.openssh.enable = true;
 
   # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
+  networking.firewall.allowedTCPPorts = [ 8080 ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
