@@ -9,6 +9,7 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       ./system-packages.nix
+      #<nixpkgs/nixos/modules/virtualisation/qemu-vm.nix>
     ];
 
   nixpkgs.overlays = [
@@ -34,6 +35,11 @@
       experimental-features = nix-command flakes
     '';
   };
+
+  # Virtualisation
+  #virtualisation = {
+  #  memorySize = 8192; 
+  #};
 
   # Use the GRUB 2 boot loader.
   boot.loader.grub.enable = true;
