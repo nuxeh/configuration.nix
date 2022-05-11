@@ -62,6 +62,12 @@
   #  };
   #};
 
+  # Printing
+  services.printing.enable = true;
+  services.printing.drivers = [ pkgs.gutenprint ];
+  services.avahi.enable = true;
+  services.avahi.nssmdns = true;
+
   # SSD options
   fileSystems."/".options = [ "noatime" "nodiratime" "discard" ];
 
@@ -226,8 +232,8 @@
   # services.openssh.enable = true;
 
   # Open ports in the firewall.
-  networking.firewall.allowedTCPPorts = [ 8080 ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
+  networking.firewall.allowedTCPPorts = [ 8080 6881 6889 ];
+  networking.firewall.allowedUDPPorts = [ 6881 6889 ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
 
