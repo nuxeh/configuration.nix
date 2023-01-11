@@ -186,12 +186,12 @@
 #  };
 
   services.spotifyd = {
-    enable = false;
+    enable = true;
     settings = {
       global = {
         username = "nuxeh";
         password = "w3yknLN4dKcs2jM";
-        device_name = "VanSound";
+        device_name = "LaptopSound";
         # The displayed device type in Spotify clients.
         # Can be unknown, computer, tablet, smartphone, speaker, t_v,
         # a_v_r (Audio/Video Receiver), s_t_b (Set-Top Box), and audio_dongle.
@@ -219,10 +219,10 @@
         backend = "alsa";
         # The alsa audio device to stream audio. To get a
         # list of valid devices, run `aplay -L`,
-        device = "alsa_audio_device";
+        device = "default";
         # The alsa control device. By default this is the same
         # name as the `device` field.
-        control = "alsa_audio_device";
+        control = "default";
         # The alsa mixer used by `spotifyd`.
         mixer = "PCM";
         # The volume controller. Each one behaves different to
