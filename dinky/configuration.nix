@@ -208,7 +208,7 @@
         max_cache_size = 1000000000;
         no_audio_cache = true;
         initial_volume = "90";
-        volume_normalisation = true;
+        volume_normalisation = false;
         normalisation_pregain = -10;
         autoplay = true;
         zeroconf_port = 1234;
@@ -216,15 +216,15 @@
         use_mpris = false;
         # The audio backend used to play music. To get
         # a list of possible backends, run `spotifyd --help`.
-        backend = "alsa";
+        backend = "pulseaudio";
         # The alsa audio device to stream audio. To get a
         # list of valid devices, run `aplay -L`,
-        device = "default";
+        #device = "default";
         # The alsa control device. By default this is the same
         # name as the `device` field.
-        control = "default";
+        #control = "default";
         # The alsa mixer used by `spotifyd`.
-        mixer = "PCM";
+        #mixer = "PCM";
         # The volume controller. Each one behaves different to
         # volume increases. For possible values, run
         # `spotifyd --help`.
