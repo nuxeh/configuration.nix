@@ -63,6 +63,15 @@
   #  };
   #};
 
+  services.i2pd = {
+    enable = true;
+    proto.http.enable = true;
+    proto.httpProxy = {
+      enable = true;
+      #outproxy = "http://false.i2p";
+    };
+  };
+
   # Printing
   services.printing.enable = true;
   services.printing.drivers = [ pkgs.gutenprint ];
@@ -176,6 +185,58 @@
 #    };
 #  };
 
+  services.spotifyd = {
+    enable = false;
+    settings = {
+      global = {
+        username = "nuxeh";
+        password = "w3yknLN4dKcs2jM";
+        device_name = "VanSound";
+        # The displayed device type in Spotify clients.
+        # Can be unknown, computer, tablet, smartphone, speaker, t_v,
+        # a_v_r (Audio/Video Receiver), s_t_b (Set-Top Box), and audio_dongle.
+        device_type = "speaker";
+        # The audio bitrate. 96, 160 or 320 kbit/s
+        bitrate = 160;
+        # The directory used to cache audio data. This setting can save
+        # a lot of bandwidth when activated, as it will avoid re-downloading
+        # audio files when replaying them.
+        #
+        # Note: The file path does not get expanded. Environment variables and
+        # shell placeholders like $HOME or ~ don't work!
+        cache_path = "cache_directory";
+        max_cache_size = 1000000000;
+        no_audio_cache = true;
+        initial_volume = "90";
+        volume_normalisation = true;
+        normalisation_pregain = -10;
+        autoplay = true;
+        zeroconf_port = 1234;
+        use_keyring = false;
+        use_mpris = false;
+        # The audio backend used to play music. To get
+        # a list of possible backends, run `spotifyd --help`.
+        backend = "alsa";
+        # The alsa audio device to stream audio. To get a
+        # list of valid devices, run `aplay -L`,
+        device = "alsa_audio_device";
+        # The alsa control device. By default this is the same
+        # name as the `device` field.
+        control = "alsa_audio_device";
+        # The alsa mixer used by `spotifyd`.
+        mixer = "PCM";
+        # The volume controller. Each one behaves different to
+        # volume increases. For possible values, run
+        # `spotifyd --help`.
+        volume_controller = "alsa";
+      };
+    };
+  };
+
+  services.node-red = {
+    enable = true;
+  };
+
   # Configure keymap in X11
   # services.xserver.layout = "us";
   # services.xserver.xkbOptions = "eurosign:e";
@@ -209,6 +270,13 @@
         home = "/home/ed/";
         shell = pkgs.fish;
         hashedPassword = "$6$/G.qBySWc$a6wVNc6QOoQNAO6kw.f01domc26TsZJ9adM5gSmUdm1l4t/S.j0A.lAfKRVmcRiEvN/NrH6ZRSIaXFMwtLqeO1";
+      };
+      guest = {
+        isNormalUser = true;
+        extraGroups = [ "networkmanager" "dialout" ];
+        home = "/home/guest/";
+        shell = pkgs.fish;
+        hashedPassword = "$6$tNW7TfiT9p7yAg80$JqbqV5ZZSTAlSJaeVMxZguYfOKLk5Xd3G4fLLKCejF4eeOvyE7hWoBZPHybGdvT0Oz68KrvDRiiZKK.2OsdUF.";
       };
       root = {
         extraGroups = [ "dialout" ];
