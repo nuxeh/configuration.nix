@@ -11,21 +11,29 @@
       #exodus
       file
       firefox
-      flatcam
+      fstl
+      #flatcam
       freecad
-      gnome3.gnome-tweaks
+      gimp
+      gnome-tweaks
       google-chrome
+      hashcat
+      hashcat-utils
       htop
+      inetutils # for telnet
       inkscape
+      intel-compute-runtime
       kicad
       nixos-shell
       platformio
-      #pulseview
+      puredata
+      pulseview
       screen
       shotwell
       simplescreenrecorder
       solvespace
       spotify
+      scrcpy
       tilix
       tor-browser-bundle-bin
       transmission
@@ -33,6 +41,9 @@
       usbutils
       vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
       wget
+      wine
+      winetricks
       zoom-us
+      vlc
   ];
 }

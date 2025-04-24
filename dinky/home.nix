@@ -31,6 +31,8 @@
       autocmd VimEnter * GitGutterEnable
       cmap W w
       cmap Q q
+      set exrc
+      set secure
     '';
   };
 

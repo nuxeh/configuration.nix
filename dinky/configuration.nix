@@ -31,10 +31,23 @@
 
   # Enable nix flakes
   nix = {
-    package = pkgs.nixUnstable;
+    package = pkgs.nixVersions.latest;
     extraOptions = ''
       experimental-features = nix-command flakes
     '';
+  };
+
+  virtualisation = {
+    podman = {
+      enable = true;
+
+      # Create a `docker` alias for podman, to use it as a drop-in replacement
+      dockerCompat = true;
+
+      # Required for containers under podman-compose to be able to talk to each other.
+      defaultNetwork.settings.dns_enabled = true;
+      #defaultNetwork.dnsname.enable = true;
+    };
   };
 
   # Virtualisation
@@ -63,13 +76,26 @@
   #  };
   #};
 
-  services.i2pd = {
+#  services.i2pd = {
+#    enable = true;
+#    proto.http.enable = true;
+#    proto.httpProxy = {
+#      enable = true;
+#      #outproxy = "http://false.i2p";
+#    };
+#  };
+
+  programs.tmux.enable = true;
+  programs.adb.enable = true;
+
+  services.fwupd.enable = true;
+
+  services.openssh = {
     enable = true;
-    proto.http.enable = true;
-    proto.httpProxy = {
-      enable = true;
-      #outproxy = "http://false.i2p";
-    };
+    # require public key authentication for better security
+    settings.PasswordAuthentication = true;
+    settings.KbdInteractiveAuthentication = true;
+    #settings.PermitRootLogin = "yes";
   };
 
   # Printing
@@ -77,6 +103,8 @@
   services.printing.drivers = [ pkgs.gutenprint ];
   services.avahi.enable = true;
   services.avahi.nssmdns = true;
+
+  services.mullvad-vpn.enable = true;
 
   # SSD options
   fileSystems."/".options = [ "noatime" "nodiratime" "discard" ];
@@ -112,6 +140,14 @@
   services.xserver.enable = true;
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.desktopManager.gnome.enable = true;
+
+  services.i2pd = {
+    enable = true;
+    proto = {
+      httpProxy.enable = true;
+      http.enable = true;
+    };
+  };
 
 #  services.url-bot-rs = {
 #    enable = true;
@@ -186,7 +222,7 @@
 #  };
 
   services.spotifyd = {
-    enable = true;
+    enable = false;
     settings = {
       global = {
         username = "nuxeh";
@@ -204,9 +240,9 @@
         #
         # Note: The file path does not get expanded. Environment variables and
         # shell placeholders like $HOME or ~ don't work!
-        cache_path = "cache_directory";
+        cache_path = "/var/cache/spotifyd";
         max_cache_size = 1000000000;
-        no_audio_cache = true;
+        #no_audio_cache = false;
         initial_volume = "90";
         volume_normalisation = false;
         normalisation_pregain = -10;
@@ -219,7 +255,7 @@
         backend = "pulseaudio";
         # The alsa audio device to stream audio. To get a
         # list of valid devices, run `aplay -L`,
-        #device = "default";
+        device = "pulse";
         # The alsa control device. By default this is the same
         # name as the `device` field.
         #control = "default";
@@ -228,7 +264,7 @@
         # The volume controller. Each one behaves different to
         # volume increases. For possible values, run
         # `spotifyd --help`.
-        volume_controller = "alsa";
+        volume_controller = "softvol";
       };
     };
   };
@@ -245,8 +281,9 @@
   # services.printing.enable = true;
 
   # Enable sound.
-  # sound.enable = true;
-  # hardware.pulseaudio.enable = true;
+  #sound.enable = true;
+  #hardware.pulseaudio.enable = true;
+  #hardware.pulseaudio.enable = lib.mkForce false;
 
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
@@ -266,7 +303,7 @@
     users = {
       ed = {
         isNormalUser = true;
-        extraGroups = [ "wheel" "networkmanager" "dialout" ];
+        extraGroups = [ "wheel" "networkmanager" "dialout" "adbusers" ];
         home = "/home/ed/";
         shell = pkgs.fish;
         hashedPassword = "$6$/G.qBySWc$a6wVNc6QOoQNAO6kw.f01domc26TsZJ9adM5gSmUdm1l4t/S.j0A.lAfKRVmcRiEvN/NrH6ZRSIaXFMwtLqeO1";
@@ -294,15 +331,22 @@
 
   programs.fish.enable = true;
 
+  programs.steam = {
+    enable = true;
+    remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
+    dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
+  };
+  hardware.opengl.driSupport32Bit = true; # Enables support for 32bit libs that steam uses
+
   # List services that you want to enable:
-  services.domoticz.enable = true;
+  #services.domoticz.enable = true;
 
   # Enable the OpenSSH daemon.
   # services.openssh.enable = true;
 
   # Open ports in the firewall.
-  networking.firewall.allowedTCPPorts = [ 8080 6881 6889 ];
-  networking.firewall.allowedUDPPorts = [ 6881 6889 ];
+  networking.firewall.allowedTCPPorts = [ 80 8080 8081 6881 6889 24242 18266 ];
+  networking.firewall.allowedUDPPorts = [ 6881 6889 18266 ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
 
